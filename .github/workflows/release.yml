@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: build.yml
+    - name: Rename directories
+      run: |
+        mkdir 4.40
+        mv Binary_4.40 4.40/Widgets.PowerReviews
+        mv Source_4.40 4.40/Nop.Plugin.Widgets.PowerReviews
+    - uses: dfar-io/nopcommerce-uploadeditems-action@v0.1
+      with:
+        plugin-name: 'Nop.Plugin.Widgets.PowerReviews'
+    - name: Zip artifact files
+      run: 7z a PowerReviews.zip .
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: PowerReviews.zip

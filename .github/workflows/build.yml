@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Install nopCommerce Source
+      run: ./init.sh
+    - name: Add plugin to nopCommerce
+      run: |
+        chmod u+x versionInit.sh
+        ./versionInit.sh
+      working-directory: '4.40'
+    - name: Build
+      run: dotnet build nopSource/NopCommerce.sln -c Release
+      working-directory: '4.40'
+    - uses: actions/upload-artifact@v2
+      if: ${{ github.event_name == 'push' }}
+      with:
+        name: Source_4.40
+        path: 4.40/Nop.Plugin.Widgets.PowerReviews
+    - uses: actions/upload-artifact@v2
+      if: ${{ github.event_name == 'push' }}
+      with:
+        name: Binary_4.40
+        path: 4.40/nopSource/Presentation/Nop.Web/Plugins/Widgets.PowerReviews
