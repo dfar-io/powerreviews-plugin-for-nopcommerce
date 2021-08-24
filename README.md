@@ -1,3 +1,6 @@
+![Build](https://github.com/dfar-io/powerreviews-plugin-for-nopcommerce/actions/workflows/build.yml/badge.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/48b2d5591f7bdb858a7b/maintainability)](https://codeclimate.com/github/dfar-io/powerreviews-plugin-for-nopcommerce/maintainability)
+
 # powerreviews-plugin-for-nopcommerce
 Integrates PowerReviews into a nopCommerce store
 
