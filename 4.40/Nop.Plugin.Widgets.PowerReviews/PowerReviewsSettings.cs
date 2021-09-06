@@ -8,6 +8,24 @@ namespace Nop.Plugin.Widgets.PowerReviews
         public string APIKey { get; private set; }
         public string MerchantGroupId { get; private set; }
         public string MerchantId { get; private set; }
+        public string CustomStyles { get; private set; }
+
+        public static PowerReviewsSettings DefaultValues()
+        {
+            return new PowerReviewsSettings()
+            {
+                CustomStyles = @"/* cleans category snippet for DefaultClean */
+                                 .p-w-r .pr-category-snippet {
+                                   margin-left: 0;
+                                   margin-bottom: 0.5rem;
+                                 }
+                                 
+                                 /* hides review count for category snippets */
+                                 .p-w-r .pr-category-snippet__total {
+                                   display: none;
+                                 }"
+            };
+        }
 
         public static PowerReviewsSettings FromModel(PowerReviewsConfigModel model)
         {
@@ -16,6 +34,7 @@ namespace Nop.Plugin.Widgets.PowerReviews
                 APIKey = model.APIKey,
                 MerchantGroupId = model.MerchantGroupId,
                 MerchantId = model.MerchantId,
+                CustomStyles = model.CustomStyles
             };
         }
 
@@ -26,6 +45,7 @@ namespace Nop.Plugin.Widgets.PowerReviews
                 APIKey = APIKey,
                 MerchantGroupId = MerchantGroupId,
                 MerchantId = MerchantId,
+                CustomStyles = CustomStyles
             };
         }
 

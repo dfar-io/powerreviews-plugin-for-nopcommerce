@@ -3,11 +3,16 @@
 @model PowerReviewsSettings
 
 @{
+	Html.AppendScriptParts("~/lib_npm/jquery/jquery.min.js");
     Html.AddHeadCustomParts("<script src=\"https://ui.powerreviews.com/stable/4.1/ui.js\" async></script>");
 }
 
 <script>
 	var currentlyDisplayedPrSnippets = [];
+
+	$(document).ready(function () {
+		updatePowerReviewsCategorySnippets()
+	});
 
 	$(document).ajaxComplete(function () {
 		updatePowerReviewsCategorySnippets()
@@ -61,3 +66,7 @@
 		return true;
 	}
 </script>
+
+<style>
+	@Html.Raw(Model.CustomStyles)
+</style>

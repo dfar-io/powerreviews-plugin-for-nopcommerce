@@ -12,5 +12,8 @@ namespace Nop.Plugin.Widgets.PowerReviews.Models
 
         [NopResourceDisplayName(PowerReviewsLocales.MerchantId)]
         public string MerchantId { get; set; }
+
+        [NopResourceDisplayName(PowerReviewsLocales.CustomStyles)]
+        public string CustomStyles { get; set; }
     }
 }

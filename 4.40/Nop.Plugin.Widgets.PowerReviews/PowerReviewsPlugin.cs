@@ -85,6 +85,7 @@ namespace Nop.Plugin.Widgets.PowerReviews
         public override async Task InstallAsync()
         {
             await AddLocalesAsync();
+            await _settingService.SaveSettingAsync(PowerReviewsSettings.DefaultValues());
             await DisallowNOPProductReviewsAsync();
 
             await base.InstallAsync();
@@ -113,11 +114,9 @@ namespace Nop.Plugin.Widgets.PowerReviews
                 new Dictionary<string, string>
                 {
                     [PowerReviewsLocales.APIKey] = "API Key",
-                    [PowerReviewsLocales.APIKeyHint] = "API key provided by PowerReviews.",
                     [PowerReviewsLocales.MerchantGroupId] = "Merchant Group ID",
-                    [PowerReviewsLocales.MerchantGroupIdHint] = "Merchant Group ID provided by PowerReviews.",
                     [PowerReviewsLocales.MerchantId] = "Merchant ID",
-                    [PowerReviewsLocales.MerchantIdHint] = "Merchant ID provided by PowerReviews.",
+                    [PowerReviewsLocales.CustomStyles] = "Custom Styles"
                 }
             );
         }
