@@ -55,6 +55,12 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 return Content("");
             }
 
+            // Hardcoded.... for now
+            if (widgetZone == PublicWidgetZones.ProductBoxAddinfoBefore)
+            {
+                return await Listing(additionalData as ProductOverviewModel);
+            }
+
             // TODO: Going to have to look this up dynamically
             // if (widgetZone == CustomPublicWidgetZones.ProductBoxAddinfoReviews &&
             //     additionalData is ProductOverviewModel)
