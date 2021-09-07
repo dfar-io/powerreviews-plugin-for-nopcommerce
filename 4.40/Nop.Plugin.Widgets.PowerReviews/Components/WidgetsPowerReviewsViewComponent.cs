@@ -60,18 +60,12 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
             {
                 return await Listing(additionalData as ProductOverviewModel);
             }
+            if (widgetZone == PublicWidgetZones.ProductDetailsOverviewTop)
+            {
+                return View("~/Plugins/Widgets.PowerReviews/Views/Detail.cshtml");
+            }
 
             // TODO: Going to have to look this up dynamically
-            // if (widgetZone == CustomPublicWidgetZones.ProductBoxAddinfoReviews &&
-            //     additionalData is ProductOverviewModel)
-            // {
-            //     return await Listing(additionalData as ProductOverviewModel);
-            // }
-            // if (widgetZone == CustomPublicWidgetZones.ProductDetailsReviews &&
-            //     additionalData is ProductDetailsModel)
-            // {
-            //     return View("~/Plugins/Widgets.PowerReviews/Views/Detail.cshtml");
-            // }
             // if (widgetZone == CustomPublicWidgetZones.ProductDetailsReviewsTab)
             // {
             //     return View("~/Plugins/Widgets.PowerReviews/Views/DetailTab.cshtml");
@@ -80,6 +74,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
             // {
             //     return View("~/Plugins/Widgets.PowerReviews/Views/DetailTabContent.cshtml");
             // }
+
             if (widgetZone == PublicWidgetZones.CategoryDetailsBottom ||
                 widgetZone == PublicWidgetZones.ManufacturerDetailsBottom)
             {
@@ -168,11 +163,14 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
             Product product,
             string imageUrl
         ) {
-            
             var productCategory = (await _categoryService.GetProductCategoriesByProductIdAsync(product.Id, true)).FirstOrDefault();
-            var category = await _categoryService.GetCategoryByIdAsync(productCategory.CategoryId);
+            var category = productCategory != null ?
+                await _categoryService.GetCategoryByIdAsync(productCategory.CategoryId) :
+                null;
             var productManufacturer = (await _manufacturerService.GetProductManufacturersByProductIdAsync(product.Id, true)).FirstOrDefault();
-            var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(productManufacturer.ManufacturerId);
+            var manufacturer = productManufacturer != null ?
+                await _manufacturerService.GetManufacturerByIdAsync(productManufacturer.ManufacturerId) :
+                null;
 
             // TODO: Get price for a mattress
 			// var price = mattressListingPrice != null ?

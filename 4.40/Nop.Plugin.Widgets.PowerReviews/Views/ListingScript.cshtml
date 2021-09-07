@@ -12,10 +12,10 @@
 
 	$(document).ready(function () {
 		updatePowerReviewsCategorySnippets()
-	});
 
-	$(document).ajaxComplete(function () {
-		updatePowerReviewsCategorySnippets()
+		$(document).ajaxComplete(function( event,request, settings ) {
+			updatePowerReviewsCategorySnippets()
+		});
 	});
 
 	function updatePowerReviewsCategorySnippets() {
