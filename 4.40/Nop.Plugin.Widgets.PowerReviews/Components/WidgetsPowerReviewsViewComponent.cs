@@ -55,26 +55,20 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 return Content("");
             }
 
-            // Hardcoded.... for now
-            if (widgetZone == PublicWidgetZones.ProductBoxAddinfoBefore)
+            if (widgetZone == _settings.ProductListingWidgetZone)
             {
-                return await Listing(additionalData as ProductOverviewModel);
+                return Listing(additionalData as ProductOverviewModel);
             }
-            if (widgetZone == PublicWidgetZones.ProductDetailsOverviewTop)
+            if (widgetZone == _settings.ProductDetailWidgetZone)
             {
                 return View("~/Plugins/Widgets.PowerReviews/Views/Detail.cshtml");
             }
-            if (widgetZone == PublicWidgetZones.ProductDetailsBeforeCollateral)
+            if (widgetZone == _settings.ProductDetailReviewsWidgetZone)
             {
-                return View("~/Plugins/Widgets.PowerReviews/Views/DetailTabContent.cshtml");
+                return View("~/Plugins/Widgets.PowerReviews/Views/DetailReviews.cshtml");
             }
 
-            // TODO: Need to include this? Or can we move it into ABC plugin?
-            // if (widgetZone == CustomPublicWidgetZones.ProductDetailsReviewsTabContent)
-            // {
-            //     return View("~/Plugins/Widgets.PowerReviews/Views/DetailTabContent.cshtml");
-            // }
-
+            // Scripts
             if (widgetZone == PublicWidgetZones.CategoryDetailsBottom ||
                 widgetZone == PublicWidgetZones.ManufacturerDetailsBottom)
             {
@@ -89,12 +83,12 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
             return Content("");
         }
 
-        private async Task<IViewComponentResult> Listing(ProductOverviewModel productOverviewModel)
+        private IViewComponentResult Listing(ProductOverviewModel productOverviewModel)
         {
             var model = new ListingModel()
             {
                 ProductId = productOverviewModel.Id,
-                ProductSku = await GetPowerReviewsSkuAsync(productOverviewModel.Sku, productOverviewModel.Id)
+                ProductSku = productOverviewModel.Sku//await GetPowerReviewsSkuAsync(productOverviewModel.Sku, productOverviewModel.Id)
             };
 
             return View(
@@ -107,11 +101,6 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
         {
             var productId = productDetailsModel.Breadcrumb.ProductId;
             var product = await _productService.GetProductByIdAsync(productId);
-            // TODO: Provide a price end date
-            // var specialPriceEndDate = await product.GetSpecialPriceEndDateAsync();
-            // var priceEndDate = specialPriceEndDate.HasValue ?
-            //     specialPriceEndDate.Value.ToLocalTime() :
-            //     DateTime.Now;
             var priceEndDate = DateTime.Now;
 
             var feedlessModel = await GetFeedlessProductAsync(
@@ -121,7 +110,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
 
             var model = new DetailModel()
             {
-                ProductSku = await GetPowerReviewsSkuAsync(productDetailsModel.Sku, productId),
+                ProductSku = productDetailsModel.Sku,//await GetPowerReviewsSkuAsync(productDetailsModel.Sku, productId),
                 ProductId = productId,
                 ProductPrice = productDetailsModel.ProductPrice.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture),
                 PriceValidUntil = priceEndDate,
@@ -133,30 +122,6 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 "~/Plugins/Widgets.PowerReviews/Views/DetailScript.cshtml",
                 model
             );
-        }
-
-        // PowerReviews requires a SKU with only letters, numbers, and -
-        // this function also considers the ABC package product
-        private async Task<string> GetPowerReviewsSkuAsync(string sku, int productId)
-        {
-            if (string.IsNullOrWhiteSpace(sku)) return "";
-
-            // TODO: Get PowerReviews SKU
-            // var powerReviewsPageId = packageProduct != null && packageProduct.Product_Id != 0 ?
-            //                             packageProduct.Sku :
-            //                             sku;
-            // var mattressSku = (await _genericAttributeService.GetAttributesForEntityAsync(productId, "Product"))
-            //                                           .FirstOrDefault(a => a.Key == "MattressSku");
-            // if (!string.IsNullOrWhiteSpace(mattressSku?.Value))
-            // {
-            //     powerReviewsPageId = mattressSku.Value;
-            // }
-            var powerReviewsPageId = sku;
-
-            char[] conversionString = powerReviewsPageId.ToCharArray();
-            conversionString = Array.FindAll<char>(conversionString, (c => (char.IsLetterOrDigit(c)
-                                    || c == '-')));
-            return new string(conversionString);
         }
 
         private async Task<FeedlessProductModel> GetFeedlessProductAsync(
@@ -172,10 +137,6 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 await _manufacturerService.GetManufacturerByIdAsync(productManufacturer.ManufacturerId) :
                 null;
 
-            // TODO: Get price for a mattress
-			// var price = mattressListingPrice != null ?
-			// 	mattressListingPrice.ToString() :
-			// 	product.Price.ToString();
             var price = product.Price.ToString();
 
             // TODO: Get specific description for product - use PowerReviewsDescription?

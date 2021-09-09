@@ -15,5 +15,17 @@ namespace Nop.Plugin.Widgets.PowerReviews.Models
 
         [NopResourceDisplayName(PowerReviewsLocales.CustomStyles)]
         public string CustomStyles { get; set; }
+
+        [NopResourceDisplayName(PowerReviewsLocales.OnReadReviewsClickCode)]
+        public string OnReadReviewsClickCode { get; set; }
+
+        [NopResourceDisplayName(PowerReviewsLocales.ProductListingWidgetZone)]
+        public string ProductListingWidgetZone { get; set; }
+
+        [NopResourceDisplayName(PowerReviewsLocales.ProductDetailWidgetZone)]
+        public string ProductDetailWidgetZone { get; set; }
+
+        [NopResourceDisplayName(PowerReviewsLocales.ProductDetailReviewsWidgetZone)]
+        public string ProductDetailReviewsWidgetZone { get; set; }
     }
 }

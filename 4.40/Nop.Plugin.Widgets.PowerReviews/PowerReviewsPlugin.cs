@@ -13,6 +13,7 @@ using System.Linq;
 using Nop.Services.Common;
 using Nop.Services.Catalog;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Seo;
 
 namespace Nop.Plugin.Widgets.PowerReviews
 {
@@ -30,6 +31,8 @@ namespace Nop.Plugin.Widgets.PowerReviews
         private readonly IRepository<GenericAttribute> _genericAttributeRepository;
         private readonly IRepository<Product> _productRepository;
 
+        private readonly PowerReviewsSettings _powerReviewsSettings;
+
         public PowerReviewsPlugin(
             IGenericAttributeService genericAttributeService,
             IProductService productService,
@@ -37,7 +40,8 @@ namespace Nop.Plugin.Widgets.PowerReviews
             ILocalizationService localizationService,
             IWebHelper webHelper,
             IRepository<GenericAttribute> genericAttributeRepository,
-            IRepository<Product> productRepository
+            IRepository<Product> productRepository,
+            PowerReviewsSettings powerReviewsSettings
         )
         {
             _genericAttributeService = genericAttributeService;
@@ -47,6 +51,7 @@ namespace Nop.Plugin.Widgets.PowerReviews
             _webHelper = webHelper;
             _genericAttributeRepository = genericAttributeRepository;
             _productRepository = productRepository;
+            _powerReviewsSettings = powerReviewsSettings;
         }
 
         public bool HideInWidgetList => false;
@@ -63,19 +68,11 @@ namespace Nop.Plugin.Widgets.PowerReviews
 
         public System.Threading.Tasks.Task<IList<string>> GetWidgetZonesAsync()
         {
-            // So this will get interesting, I think we'll need to read from a database
-            // kind of like what HTML widgets does.
             return Task.FromResult<IList<string>>(new List<string>
             {
-                // //PublicWidgetZones.ProductBoxAddinfoBefore,
-                // CustomPublicWidgetZones.ProductBoxAddinfoReviews,
-                // //PublicWidgetZones.ProductDetailsOverviewTop,
-                // CustomPublicWidgetZones.ProductDetailsReviews,
-                // CustomPublicWidgetZones.ProductDetailsReviewsTab,
-                // CustomPublicWidgetZones.ProductDetailsReviewsTabContent,
-                PublicWidgetZones.ProductBoxAddinfoBefore,
-                PublicWidgetZones.ProductDetailsOverviewTop,
-                PublicWidgetZones.ProductDetailsBeforeCollateral,
+                _powerReviewsSettings.ProductListingWidgetZone,
+                _powerReviewsSettings.ProductDetailWidgetZone,
+                _powerReviewsSettings.ProductDetailReviewsWidgetZone,
 
                 // standard - used for scripts
                 PublicWidgetZones.CategoryDetailsBottom,
@@ -89,6 +86,7 @@ namespace Nop.Plugin.Widgets.PowerReviews
             await AddLocalesAsync();
             await _settingService.SaveSettingAsync(PowerReviewsSettings.DefaultValues());
             await DisallowNOPProductReviewsAsync();
+            await AdjustMicrodataSeoSettingAsync(false);
 
             await base.InstallAsync();
         }
@@ -97,8 +95,8 @@ namespace Nop.Plugin.Widgets.PowerReviews
         {
             await _settingService.DeleteSettingAsync<PowerReviewsSettings>();
             await _localizationService.DeleteLocaleResourcesAsync(PowerReviewsLocales.Base);
-
             await EnableNOPProductReviewsAsync();
+            await AdjustMicrodataSeoSettingAsync(true);
 
             await base.UninstallAsync();
         }
@@ -118,7 +116,11 @@ namespace Nop.Plugin.Widgets.PowerReviews
                     [PowerReviewsLocales.APIKey] = "API Key",
                     [PowerReviewsLocales.MerchantGroupId] = "Merchant Group ID",
                     [PowerReviewsLocales.MerchantId] = "Merchant ID",
-                    [PowerReviewsLocales.CustomStyles] = "Custom Styles"
+                    [PowerReviewsLocales.CustomStyles] = "Custom Styles",
+                    [PowerReviewsLocales.OnReadReviewsClickCode] = "On Read Reviews Click Code",
+                    [PowerReviewsLocales.ProductListingWidgetZone] = "Product Listing Widget Zone",
+                    [PowerReviewsLocales.ProductDetailWidgetZone] = "Product Details Widget Zone",
+                    [PowerReviewsLocales.ProductDetailReviewsWidgetZone] = "Product Detail Reviews Widget Zone"
                 }
             );
         }
@@ -164,6 +166,13 @@ namespace Nop.Plugin.Widgets.PowerReviews
 
                 await _genericAttributeService.DeleteAttributeAsync(genericAttribute);
             }
+        }
+
+        private async Task AdjustMicrodataSeoSettingAsync(bool value)
+        {
+            var seoSettings = await _settingService.LoadSettingAsync<SeoSettings>();
+            seoSettings.MicrodataEnabled = value;
+            await _settingService.SaveSettingAsync(seoSettings);
         }
     }
 }
