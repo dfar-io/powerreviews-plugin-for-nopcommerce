@@ -64,12 +64,12 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
             {
                 return View("~/Plugins/Widgets.PowerReviews/Views/Detail.cshtml");
             }
+            if (widgetZone == PublicWidgetZones.ProductDetailsBeforeCollateral)
+            {
+                return View("~/Plugins/Widgets.PowerReviews/Views/DetailTabContent.cshtml");
+            }
 
-            // TODO: Going to have to look this up dynamically
-            // if (widgetZone == CustomPublicWidgetZones.ProductDetailsReviewsTab)
-            // {
-            //     return View("~/Plugins/Widgets.PowerReviews/Views/DetailTab.cshtml");
-            // }
+            // TODO: Need to include this? Or can we move it into ABC plugin?
             // if (widgetZone == CustomPublicWidgetZones.ProductDetailsReviewsTabContent)
             // {
             //     return View("~/Plugins/Widgets.PowerReviews/Views/DetailTabContent.cshtml");

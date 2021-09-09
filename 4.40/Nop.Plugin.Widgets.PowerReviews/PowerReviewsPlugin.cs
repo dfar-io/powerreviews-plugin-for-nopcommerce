@@ -75,6 +75,7 @@ namespace Nop.Plugin.Widgets.PowerReviews
                 // CustomPublicWidgetZones.ProductDetailsReviewsTabContent,
                 PublicWidgetZones.ProductBoxAddinfoBefore,
                 PublicWidgetZones.ProductDetailsOverviewTop,
+                PublicWidgetZones.ProductDetailsBeforeCollateral,
 
                 // standard - used for scripts
                 PublicWidgetZones.CategoryDetailsBottom,

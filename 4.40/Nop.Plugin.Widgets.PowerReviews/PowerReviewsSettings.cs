@@ -23,6 +23,24 @@ namespace Nop.Plugin.Widgets.PowerReviews
                                  /* hides review count for category snippets */
                                  .p-w-r .pr-category-snippet__total {
                                    display: none;
+                                 }
+                                 
+                                 /* centers review snippet */
+                                 .p-w-r .pr-review-snippet-container {
+                                   text-align: center;
+                                   margin-bottom: 1rem;
+                                 }
+                                 
+                                 /* removes 'recommended to friends' message from review snippet */
+                                 .p-w-r .pr-snippet-stars-reco-reco {
+                                    display: none;   
+                                 }
+                                 
+                                 @media(min-width: 1001px) {
+                                   .p-w-r .pr-review-snippet-container {
+                                     text-align: center;
+                                     margin-bottom: 1rem;
+                                   }
                                  }"
             };
         }
