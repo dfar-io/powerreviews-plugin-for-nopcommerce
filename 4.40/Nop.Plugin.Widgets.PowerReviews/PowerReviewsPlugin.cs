@@ -74,7 +74,6 @@ namespace Nop.Plugin.Widgets.PowerReviews
                 _powerReviewsSettings.ProductDetailWidgetZone,
                 _powerReviewsSettings.ProductDetailReviewsWidgetZone,
 
-                // standard - used for scripts
                 PublicWidgetZones.CategoryDetailsBottom,
                 PublicWidgetZones.ManufacturerDetailsBottom,
                 PublicWidgetZones.ProductDetailsBottom

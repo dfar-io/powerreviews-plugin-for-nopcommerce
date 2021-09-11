@@ -57,7 +57,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
 
             if (widgetZone == _settings.ProductListingWidgetZone)
             {
-                return Listing(additionalData as ProductOverviewModel);
+                return await Listing(additionalData as ProductOverviewModel);
             }
             if (widgetZone == _settings.ProductDetailWidgetZone)
             {
@@ -83,12 +83,12 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
             return Content("");
         }
 
-        private IViewComponentResult Listing(ProductOverviewModel productOverviewModel)
+        private async Task<IViewComponentResult> Listing(ProductOverviewModel productOverviewModel)
         {
             var model = new ListingModel()
             {
                 ProductId = productOverviewModel.Id,
-                ProductSku = productOverviewModel.Sku//await GetPowerReviewsSkuAsync(productOverviewModel.Sku, productOverviewModel.Id)
+                ProductSku = await GetPowerReviewsSkuAsync(productOverviewModel.Id, productOverviewModel.Sku)
             };
 
             return View(
@@ -110,7 +110,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
 
             var model = new DetailModel()
             {
-                ProductSku = productDetailsModel.Sku,//await GetPowerReviewsSkuAsync(productDetailsModel.Sku, productId),
+                ProductSku = await GetPowerReviewsSkuAsync(productId, productDetailsModel.Sku),
                 ProductId = productId,
                 ProductPrice = productDetailsModel.ProductPrice.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture),
                 PriceValidUntil = priceEndDate,
@@ -138,9 +138,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 null;
 
             var price = product.Price.ToString();
-
-            // TODO: Get specific description for product - use PowerReviewsDescription?
-            var description = product.ShortDescription;
+            var description = await _genericAttributeService.GetAttributeAsync<string>(product, "PowerReviewsDescription", 0, product.ShortDescription);
 
             return new FeedlessProductModel()
             {
@@ -155,6 +153,18 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 InStock = !product.DisableBuyButton,
                 Price = price
             };
+        }
+
+        // PowerReviews requires a SKU with only letters, numbers
+        private async Task<string> GetPowerReviewsSkuAsync(int productId, string defaultSku)
+        {
+            var sku = await _genericAttributeService.GetAttributeAsync<Product, string>(productId, "PowerReviewsSku", 0, defaultSku);
+            if (string.IsNullOrWhiteSpace(sku)) return "";
+
+            char[] conversionString = sku.ToCharArray();
+            conversionString = Array.FindAll<char>(conversionString, (c => (char.IsLetterOrDigit(c)
+                                    || c == '-')));
+            return new string(conversionString);
         }
     }
 }
