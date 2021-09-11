@@ -85,10 +85,16 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
 
         private async Task<IViewComponentResult> Listing(ProductOverviewModel productOverviewModel)
         {
+            var sku = await GetPowerReviewsSkuAsync(productOverviewModel.Id, productOverviewModel.Sku);
+            if (string.IsNullOrWhiteSpace(sku))
+            {
+                return Content("");
+            }
+
             var model = new ListingModel()
             {
                 ProductId = productOverviewModel.Id,
-                ProductSku = await GetPowerReviewsSkuAsync(productOverviewModel.Id, productOverviewModel.Sku)
+                ProductSku = sku
             };
 
             return View(
@@ -100,6 +106,12 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
         private async Task<IViewComponentResult> Detail(ProductDetailsModel productDetailsModel)
         {
             var productId = productDetailsModel.Breadcrumb.ProductId;
+            var sku = await GetPowerReviewsSkuAsync(productId, productDetailsModel.Sku);
+            if (string.IsNullOrWhiteSpace(sku))
+            {
+                return Content("");
+            }
+            
             var product = await _productService.GetProductByIdAsync(productId);
             var priceEndDate = DateTime.Now;
 
@@ -110,7 +122,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
 
             var model = new DetailModel()
             {
-                ProductSku = await GetPowerReviewsSkuAsync(productId, productDetailsModel.Sku),
+                ProductSku = sku,
                 ProductId = productId,
                 ProductPrice = productDetailsModel.ProductPrice.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture),
                 PriceValidUntil = priceEndDate,

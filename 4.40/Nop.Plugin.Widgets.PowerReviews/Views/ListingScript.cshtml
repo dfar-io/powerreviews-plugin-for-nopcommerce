@@ -22,16 +22,13 @@
 		var productGrid = $('.product-grid');
 		if (productGrid.length == 0 || productGrid.is(":hidden")) {	return;	}
 
-		var itemBoxes = productGrid.find('.item-box');
-		if (itemBoxes.length == 0) { return; }
-
-		var prSnippets = itemBoxes.find("[id^='pr_snippet_product_']");
+		var prSnippets = productGrid.find("[id^='pr_snippet_product_']");
 		if (areArraysEqual(prSnippets, currentlyDisplayedPrSnippets)) {	return;	}
 
 		currentlyDisplayedPrSnippets = prSnippets;
 
 		var powerReviewsRenderConfigs = [];
-		itemBoxes.each(function(index, item){
+		prSnippets.each(function(index, item){
 			var sku = $(item).find('.product-box-sku').text().replace(/[^0-9a-zA-Z-]/gi,'');
 
 			powerReviewsRenderConfigs.push({
