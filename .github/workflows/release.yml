@@ -17,7 +17,7 @@ jobs:
         mkdir 4.40
         mv Binary_4.40 4.40/Widgets.PowerReviews
         mv Source_4.40 4.40/Nop.Plugin.Widgets.PowerReviews
-    - uses: dfar-io/nopcommerce-uploadeditems-action@v0.1
+    - uses: dfar-io/nopcommerce-uploadeditems-action@main
       with:
         plugin-name: 'Nop.Plugin.Widgets.PowerReviews'
     - name: Zip artifact files
