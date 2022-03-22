@@ -158,7 +158,7 @@ namespace Nop.Plugin.Widgets.PowerReviews.Components
                 Url = _webHelper.GetThisPageUrl(true),
                 ImageUrl = imageUrl,
                 Description = description,
-                CategoryName = category.Name,
+                CategoryName = category?.Name,
                 ManufacturerId = manufacturer != null ? manufacturer.Id : 0,
                 Upc = product.Gtin,
                 BrandName = manufacturer?.Name,
